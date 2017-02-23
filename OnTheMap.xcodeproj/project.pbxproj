@@ -8,20 +8,20 @@
 
 /* Begin PBXBuildFile section */
 		A15452FB1E5F5AA600A70BAE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15452FA1E5F5AA600A70BAE /* AppDelegate.swift */; };
-		A15452FD1E5F5AA600A70BAE /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15452FC1E5F5AA600A70BAE /* ViewController.swift */; };
 		A15453001E5F5AA600A70BAE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A15452FE1E5F5AA600A70BAE /* Main.storyboard */; };
 		A15453021E5F5AA600A70BAE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A15453011E5F5AA600A70BAE /* Assets.xcassets */; };
 		A15453051E5F5AA600A70BAE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A15453031E5F5AA600A70BAE /* LaunchScreen.storyboard */; };
+		A15453111E5F83BA00A70BAE /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15453101E5F83BA00A70BAE /* LoginViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		A15452F71E5F5AA600A70BAE /* OnTheMap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OnTheMap.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A15452FA1E5F5AA600A70BAE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		A15452FC1E5F5AA600A70BAE /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		A15452FF1E5F5AA600A70BAE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		A15453011E5F5AA600A70BAE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A15453041E5F5AA600A70BAE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A15453061E5F5AA600A70BAE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A15453101E5F83BA00A70BAE /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,14 +54,46 @@
 		A15452F91E5F5AA600A70BAE /* OnTheMap */ = {
 			isa = PBXGroup;
 			children = (
+				A154530F1E5F669F00A70BAE /* Controller */,
+				A154530D1E5F667700A70BAE /* View */,
+				A154530C1E5F666000A70BAE /* Model */,
 				A15452FA1E5F5AA600A70BAE /* AppDelegate.swift */,
-				A15452FC1E5F5AA600A70BAE /* ViewController.swift */,
-				A15452FE1E5F5AA600A70BAE /* Main.storyboard */,
-				A15453011E5F5AA600A70BAE /* Assets.xcassets */,
-				A15453031E5F5AA600A70BAE /* LaunchScreen.storyboard */,
+				A154530E1E5F669000A70BAE /* Assets */,
 				A15453061E5F5AA600A70BAE /* Info.plist */,
 			);
 			path = OnTheMap;
+			sourceTree = "<group>";
+		};
+		A154530C1E5F666000A70BAE /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		A154530D1E5F667700A70BAE /* View */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		A154530E1E5F669000A70BAE /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				A15452FE1E5F5AA600A70BAE /* Main.storyboard */,
+				A15453011E5F5AA600A70BAE /* Assets.xcassets */,
+				A15453031E5F5AA600A70BAE /* LaunchScreen.storyboard */,
+			);
+			name = Assets;
+			sourceTree = "<group>";
+		};
+		A154530F1E5F669F00A70BAE /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				A15453101E5F83BA00A70BAE /* LoginViewController.swift */,
+			);
+			name = Controller;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -96,6 +128,7 @@
 				TargetAttributes = {
 					A15452F61E5F5AA600A70BAE = {
 						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = 39SU5X655D;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -136,7 +169,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A15452FD1E5F5AA600A70BAE /* ViewController.swift in Sources */,
+				A15453111E5F83BA00A70BAE /* LoginViewController.swift in Sources */,
 				A15452FB1E5F5AA600A70BAE /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -260,6 +293,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 39SU5X655D;
 				INFOPLIST_FILE = OnTheMap/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.cuda12.OnTheMap;
@@ -272,6 +306,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 39SU5X655D;
 				INFOPLIST_FILE = OnTheMap/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.cuda12.OnTheMap;
