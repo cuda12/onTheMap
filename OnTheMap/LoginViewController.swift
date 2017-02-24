@@ -15,29 +15,50 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var buttonLoginUdacity: UIButton!
     @IBOutlet weak var labelOutput: UILabel!
     
+    var overlayView: UIView?
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        
+        overlayView = storyboard?.instantiateViewController(withIdentifier: "LoginAuthViewController").view
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        buttonLoginUdacity.isEnabled = false
+        enableUI(enable: true)
     }
 
 
     // MARK: - Button actions
 
     @IBAction func loginButtonPressed(_ sender: Any) {
-        print("login with \(inputEmail.text) and \(inputPassword.text)")
         
-        // TODO auth
+        enableUI(enable: false)
         
-        completeLogin()
+        // Note: since sanity checks on textfield inputs disable the login button, text properties can be called directly
         
+        let username = inputEmail.text!
+        let password = inputPassword.text!
+        
+        // authenticate udacity user
+        UdacityClient.sharedInstance().authenticateUdacityUser(username, password, completionHandlerAuth: { (success, errorMsg) in
+            
+            if success {
+                performUIUpdatesOnMain {
+                    self.completeLogin()
+                }
+            } else {
+                performUIUpdatesOnMain {
+                    self.showLoginAlert(errorMsg!)
+                    
+                    self.enableUI(enable: true)
+                }
+            }
+        })
     }
     
     @IBAction func signUpButtonPressed(_ sender: Any) {
@@ -61,21 +82,52 @@ class LoginViewController: UIViewController {
 private extension LoginViewController {
     func checkValidLoginInputTypes() {
         guard let email = inputEmail.text, let password = inputPassword.text else {
-            setUILoginEnabled(false)
+            setLoginButtonEnabled(false)
             return
         }
         
         // sanity checks
         if !email.contains("@") || email.characters.count == 0 || password.characters.count == 0 {
-            setUILoginEnabled(false)
-            print("incomplete login data")
+            setLoginButtonEnabled(false)
         } else {
-            setUILoginEnabled(true)
+            setLoginButtonEnabled(true)
         }
     }
     
-    func setUILoginEnabled(_ enable: Bool) {
+    func setLoginButtonEnabled(_ enable: Bool) {
         buttonLoginUdacity.isEnabled = enable
+    }
+    
+    func enableUI(enable: Bool) {
+        inputEmail.isEnabled = enable
+        inputPassword.isEnabled = enable
+        
+        // button enable only if valid inputs, disabling in any case
+        if enable {
+            checkValidLoginInputTypes()
+        } else {
+            buttonLoginUdacity.isEnabled = enable
+        }
+        
+        // if disabled overlay with authentification view controller
+        if !enable {
+            view.addSubview(overlayView!)
+        } else {
+            overlayView?.removeFromSuperview()
+        }
+    }
+    
+    func showLoginAlert(_ errorMsg: String) {
+        let alertController = UIAlertController()
+        alertController.title = "Login failed"
+        alertController.message = errorMsg
+        
+        let dismissAction = UIAlertAction(title: "dismiss", style: UIAlertActionStyle.destructive) { (action) in
+            self.dismiss(animated: true, completion: nil)
+        }
+        alertController.addAction(dismissAction)
+        
+        present(alertController, animated: true, completion: nil)
     }
 }
 
