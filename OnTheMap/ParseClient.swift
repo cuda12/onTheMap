@@ -11,6 +11,10 @@ import Foundation
 class ParseClient {
     
     func getStudentLocations(_ completionHandlerGetLoc: @escaping (_ data: [StudentLocation]?, _ error: NSError?) -> Void) {
+        
+        // TODO use constants
+        // TODO use queries
+        
         let request = NSMutableURLRequest(url: URL(string: Constants.API_URL)!)
         request.addValue("QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr", forHTTPHeaderField: "X-Parse-Application-Id")
         request.addValue("QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY", forHTTPHeaderField: "X-Parse-REST-API-Key")

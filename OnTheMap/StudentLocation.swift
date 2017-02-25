@@ -57,6 +57,8 @@ struct StudentLocation {
     
     static func studentLocations(fromResults results: [[String: AnyObject]]) -> [StudentLocation] {
         
+        // TODO add only new students!
+        
         var studentLocations = [StudentLocation]()
         
         // loop over results and add as a student location
