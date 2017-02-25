@@ -21,15 +21,28 @@ class MapViewController: UIViewController {
 
         
         // add navigation controll buttons
-        // TODO
+        parent!.navigationItem.rightBarButtonItems = [
+            UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(loadStudentLocations)),
+            UIBarButtonItem(image: UIImage(named: "pin")!, style: .plain, target: self, action: #selector(test))
+        ]
         
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        // load student locations and add as pins
+        loadStudentLocations()
+    }
+    
+    func test() {
+        print("test")
+    }
+   
+    func loadStudentLocations() {
+        print("refresh map")
         ParseClient.sharedInstance().getStudentLocations { (data, error) in
-            // TODO
+            // TODO handle no student data
             guard let data = data else {
                 print("no students data loaded")
                 return
@@ -41,7 +54,6 @@ class MapViewController: UIViewController {
             }
         }
     }
-   
     
     func addPinsToMapforStudents() {
         for studentLocation in studentLocations {
@@ -85,8 +97,20 @@ extension MapViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         if control == view.rightCalloutAccessoryView {
             let app = UIApplication.shared
-            if let toOpen = view.annotation?.subtitle! {
-                app.open(URL(string: toOpen)!, options: [:])
+            if let studUrl = URL(string: ((view.annotation?.subtitle)!)!), app.canOpenURL(studUrl) {
+                app.open(studUrl, options: [:])
+            } else {
+                let alertController = UIAlertController()
+                
+                alertController.title = "No Valid Url"
+                alertController.message = "The provided URL can't be opened, select a different student"
+                
+                let dismissAction = UIAlertAction(title: "ok", style: UIAlertActionStyle.cancel) { (action) in
+                    self.dismiss(animated: true, completion: nil)
+                }
+                alertController.addAction(dismissAction)
+                
+                present(alertController, animated: true, completion: nil)
             }
         }
     }

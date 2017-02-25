@@ -17,10 +17,22 @@ class TableViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // add navigation bar items
+        parent!.navigationItem.rightBarButtonItems = [
+            UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(loadStudentLocations)),
+            UIBarButtonItem(image: UIImage(named: "pin")!, style: .plain, target: self, action: #selector(test))
+        ]
     }
     
     override func viewWillAppear(_ animated: Bool) {
         
+        // load and add student location data to table
+        loadStudentLocations()
+    }
+    
+    func loadStudentLocations() {
+        print("load student data")
         ParseClient.sharedInstance().getStudentLocations { (studLocData, error) in
             guard let studLocData = studLocData else {
                 print("no students locations found")
@@ -30,8 +42,13 @@ class TableViewController: UIViewController {
             self.studentLocations = studLocData
             performUIUpdatesOnMain {
                 self.tableStudentLocations.reloadData()
+                print("table refreshed")
             }
         }
+    }
+    
+    func test() {
+        print("test")
     }
 }
 
@@ -61,9 +78,20 @@ extension TableViewController: UITableViewDelegate, UITableViewDataSource {
     
         let app = UIApplication.shared
         
-        if let studUrl = URL(string: studentLocation.mediaUrl) {
-            print(studUrl)
+        if let studUrl = URL(string: studentLocation.mediaUrl), app.canOpenURL(studUrl) {
             app.open(studUrl, options: [:])
+        } else {
+            let alertController = UIAlertController()
+            
+            alertController.title = "No Valid Url"
+            alertController.message = "The provided URL can't be opened, select a different student"
+            
+            let dismissAction = UIAlertAction(title: "ok", style: UIAlertActionStyle.cancel) { (action) in
+                self.dismiss(animated: true, completion: nil)
+            }
+            alertController.addAction(dismissAction)
+            
+            present(alertController, animated: true, completion: nil)
         }
     }
 }
