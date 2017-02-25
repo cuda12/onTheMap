@@ -12,6 +12,10 @@
 		A12452081E60E733006E5F3A /* ParseClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12452071E60E733006E5F3A /* ParseClient.swift */; };
 		A124520A1E60E8CC006E5F3A /* StudentLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12452091E60E8CC006E5F3A /* StudentLocation.swift */; };
 		A124520C1E610672006E5F3A /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A124520B1E610672006E5F3A /* TableViewController.swift */; };
+		A12452101E61FF03006E5F3A /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A124520D1E61FF03006E5F3A /* Roboto-Medium.ttf */; };
+		A12452111E61FF03006E5F3A /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A124520E1E61FF03006E5F3A /* Roboto-Regular.ttf */; };
+		A12452121E61FF03006E5F3A /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A124520F1E61FF03006E5F3A /* Roboto-Thin.ttf */; };
+		A12452141E622BCD006E5F3A /* InformationPostingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12452131E622BCD006E5F3A /* InformationPostingViewController.swift */; };
 		A15452FB1E5F5AA600A70BAE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15452FA1E5F5AA600A70BAE /* AppDelegate.swift */; };
 		A15453001E5F5AA600A70BAE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A15452FE1E5F5AA600A70BAE /* Main.storyboard */; };
 		A15453021E5F5AA600A70BAE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A15453011E5F5AA600A70BAE /* Assets.xcassets */; };
@@ -26,6 +30,10 @@
 		A12452071E60E733006E5F3A /* ParseClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseClient.swift; sourceTree = "<group>"; };
 		A12452091E60E8CC006E5F3A /* StudentLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StudentLocation.swift; sourceTree = "<group>"; };
 		A124520B1E610672006E5F3A /* TableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
+		A124520D1E61FF03006E5F3A /* Roboto-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Medium.ttf"; sourceTree = "<group>"; };
+		A124520E1E61FF03006E5F3A /* Roboto-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Regular.ttf"; sourceTree = "<group>"; };
+		A124520F1E61FF03006E5F3A /* Roboto-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Thin.ttf"; sourceTree = "<group>"; };
+		A12452131E622BCD006E5F3A /* InformationPostingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InformationPostingViewController.swift; sourceTree = "<group>"; };
 		A15452F71E5F5AA600A70BAE /* OnTheMap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OnTheMap.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A15452FA1E5F5AA600A70BAE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A15452FF1E5F5AA600A70BAE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -100,6 +108,9 @@
 				A15452FE1E5F5AA600A70BAE /* Main.storyboard */,
 				A15453011E5F5AA600A70BAE /* Assets.xcassets */,
 				A15453031E5F5AA600A70BAE /* LaunchScreen.storyboard */,
+				A124520D1E61FF03006E5F3A /* Roboto-Medium.ttf */,
+				A124520E1E61FF03006E5F3A /* Roboto-Regular.ttf */,
+				A124520F1E61FF03006E5F3A /* Roboto-Thin.ttf */,
 			);
 			name = Assets;
 			sourceTree = "<group>";
@@ -110,6 +121,7 @@
 				A15453101E5F83BA00A70BAE /* LoginViewController.swift */,
 				A12452051E60DB09006E5F3A /* MapViewController.swift */,
 				A124520B1E610672006E5F3A /* TableViewController.swift */,
+				A12452131E622BCD006E5F3A /* InformationPostingViewController.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -174,7 +186,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A12452101E61FF03006E5F3A /* Roboto-Medium.ttf in Resources */,
 				A15453051E5F5AA600A70BAE /* LaunchScreen.storyboard in Resources */,
+				A12452121E61FF03006E5F3A /* Roboto-Thin.ttf in Resources */,
+				A12452111E61FF03006E5F3A /* Roboto-Regular.ttf in Resources */,
 				A15453021E5F5AA600A70BAE /* Assets.xcassets in Resources */,
 				A15453001E5F5AA600A70BAE /* Main.storyboard in Resources */,
 			);
@@ -193,6 +208,7 @@
 				A124520C1E610672006E5F3A /* TableViewController.swift in Sources */,
 				A15453111E5F83BA00A70BAE /* LoginViewController.swift in Sources */,
 				A15452FB1E5F5AA600A70BAE /* AppDelegate.swift in Sources */,
+				A12452141E622BCD006E5F3A /* InformationPostingViewController.swift in Sources */,
 				A12452061E60DB09006E5F3A /* MapViewController.swift in Sources */,
 				A15453131E5F93E300A70BAE /* UdacityClient.swift in Sources */,
 			);
