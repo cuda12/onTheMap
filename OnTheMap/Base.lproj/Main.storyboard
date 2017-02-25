@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="EIz-H9-R5L">
     <device id="retina4_0" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -128,6 +128,10 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </tabBar>
+                    <connections>
+                        <segue destination="69W-8W-0NO" kind="relationship" relationship="viewControllers" id="Xit-69-6mc"/>
+                        <segue destination="rI4-7L-ddb" kind="relationship" relationship="viewControllers" id="4gC-9g-DZA"/>
+                    </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dxJ-MG-8B8" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -169,7 +173,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CJo-Rv-STg" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2191.875" y="375"/>
+            <point key="canvasLocation" x="2276" y="287"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="PhJ-ZH-E6M">
@@ -291,7 +295,7 @@
         <!--map-->
         <scene sceneID="aMK-0i-Xw0">
             <objects>
-                <viewController id="69W-8W-0NO" sceneMemberID="viewController">
+                <viewController id="69W-8W-0NO" customClass="MapViewController" customModule="OnTheMap" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="qfg-Ad-lRY"/>
                         <viewControllerLayoutGuide type="bottom" id="eNP-UU-2n6"/>
@@ -301,7 +305,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="fqZ-RU-RoJ">
-                                <rect key="frame" x="0.0" y="20" width="320" height="548"/>
+                                <rect key="frame" x="0.0" y="64" width="320" height="455"/>
+                                <connections>
+                                    <outlet property="delegate" destination="69W-8W-0NO" id="Ygb-TX-f42"/>
+                                </connections>
                             </mapView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -313,10 +320,13 @@
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="map" image="map" id="82V-85-ksv"/>
+                    <connections>
+                        <outlet property="mapView" destination="fqZ-RU-RoJ" id="NdV-Z5-l9m"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Gib-NU-4ad" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2191.875" y="-302.11267605633805"/>
+            <point key="canvasLocation" x="2278" y="-406"/>
         </scene>
     </scenes>
     <resources>

@@ -58,6 +58,7 @@ class UdacityClient {
             // parse data - check if credentials are valid
             if let accountDetails = data["account"] as? [String: AnyObject], (accountDetails["registered"] as? Bool)! {
                 print(accountDetails)   // TODO TBC dont save users ID, key?
+                Constants.AccountID = accountDetails["key"]! as! String
                 completionHandlerGetSessionID(true, nil)
             } else {
                 completionHandlerGetSessionID(false, "Account not found or invalid credentials")
@@ -146,6 +147,7 @@ extension UdacityClient {
     
     struct Constants {
         static let ApiSessionUrl = "https://www.udacity.com/api/session"
+        static var AccountID = "9387594692" // TODO set to null string
     }
     
     
