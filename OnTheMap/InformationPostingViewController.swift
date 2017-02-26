@@ -12,6 +12,7 @@ import MapKit
 class InformationPostingViewController: UIViewController {
 
     var postedLocationString: String?
+    var postedLocationCoordiantes: CLLocationCoordinate2D?
     
     @IBOutlet weak var viewTop: UIView!
     @IBOutlet weak var viewMid: UIView!
@@ -40,81 +41,173 @@ class InformationPostingViewController: UIViewController {
         initHeaderLabel()
         
         // set up Information Posting View UI
-        setInformationPostingUIView()
+        showInformationPostingView(forDefaultPage: true)
     }
     
     
     // MARK: Buttons actions
     
     @IBAction func togglePostingButton(_ sender: Any) {
-        guard let postedLocationString = postedLocationString else {
-            
-            // if no location is set yet, switch to second subview
-            
-            if let inputedLocation = textFieldLocation.text {
-                self.postedLocationString = inputedLocation
-            }
-            
-            // refresh view
-            setInformationPostingUIView()
-            return
-        }
+        // depending on the page of the view, button either shows the entered location on the map or adds it to parse databse.
         
-        // todo add to db - delete the following only for debugging
-        print(postedLocationString)
-        self.postedLocationString = nil
-        setInformationPostingUIView()
+        if let searchString = textFieldLocation.text, postedLocationCoordiantes == nil {
+            
+            // show location on map
+            
+            enableInformationPostingView(enable: false)
+            forwardGeocoding(address: searchString, completionHandlerFrwdGeocoding: { (coordinates, error) in
+                guard let coordinates = coordinates else {
+                    performUIUpdatesOnMain {
+                        self.showAlertCancel(title: "Location not found", details: "Check your input and make sure your cell is connected to the web")
+                        self.enableInformationPostingView(enable: true)
+                    }
+                    return
+                }
+                
+                self.postedLocationCoordiantes = coordinates
+                performUIUpdatesOnMain {
+                    self.enableInformationPostingView(enable: true)
+                    self.showInformationPostingView(forDefaultPage: false)
+                    self.addLocationPinAndCenter(atCoordinates: coordinates)
+                }
+            })
+        } else {
+        
+            // submit location
+            let app = UIApplication.shared
+            
+            if let urlUser = URL(string: textFieldUrl.text!), app.canOpenURL(urlUser) {
+                print("valid url gonna post: \(urlUser)")
+            } else {
+                showAlertCancel(title: "Invalid URL", details: "Please provide a valid URL")
+            }
+        }
     }
     
     @IBAction func toggleCancelButton(_ sender: Any) {
+        
+        // TBC cancelGeocode() ?? check docu
         print("TODO dismiss view")
     }
     
     
+    // MARK: Alert Controller
     
-    // MARK: Helpers
-    
-    func setInformationPostingUIView() {
+    func showAlertCancel(title: String, details: String) {
+        let alertController = UIAlertController()
         
-        if let postedLocationString = postedLocationString {
-            print(postedLocationString)
-            // TODO find on map alert otherwise and go back
-            
-            // show second view
-            
-            // hide and show corresponding labels, map and text fields
-            textFieldUrl.isHidden = false
-            mapView.isHidden = false
-            
-            textFieldLocation.isHidden = true
-            labelHeading.isHidden = true
-            
-            // adjust button title
-            buttonPosting.setTitle("Submit", for: .normal)
-            
-            // set colors and background colors
-            viewTop.backgroundColor = colors.grayishBlue
-            viewBottom.backgroundColor = colors.lightGrayTranslucent
-            buttonCancel.setTitleColor(.white, for: .normal)
-            
+        alertController.title = title
+        alertController.message = details
+        
+        let dismissAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel) { (action) in
+            self.dismiss(animated: true, completion: nil)
+        }
+        alertController.addAction(dismissAction)
+        
+        present(alertController, animated: true, completion: nil)
+    }
+}
+
+
+// MARK: Textfields delegates
+
+extension InformationPostingViewController: UITextFieldDelegate {
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
+    // make sure URL starts with http or https - add if not provide e.g. for www.server.com
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        if textField == textFieldUrl {
+            if let inputedUrl = textField.text {
+                if !inputedUrl.contains("http://") && !inputedUrl.contains("https://") {
+                    textField.text = "http://\(inputedUrl)"
+                }
+            }
+        }
+    }
+}
+
+
+// MARK: Map Kit delegats and helpers
+
+extension InformationPostingViewController: MKMapViewDelegate {
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        
+        let reusePinId = "pin"
+        
+        var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reusePinId) as? MKPinAnnotationView
+        
+        if pinView == nil {
+            pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reusePinId)
+            pinView!.canShowCallout = true
+            pinView!.pinTintColor = .red
         } else {
-            // hide and show corresponding labels, map and text fields
-            textFieldUrl.isHidden = true
-            mapView.isHidden = true
+            pinView!.annotation = annotation
+        }
+        
+        return pinView
+    }
+    
+    
+    // MARK: Map helpers
+
+    func forwardGeocoding(address: String, completionHandlerFrwdGeocoding: @escaping (_ coordinates: CLLocationCoordinate2D?, _ error: NSError?) -> Void) {
+        CLGeocoder().geocodeAddressString(address) { (placemarks, error) in
+            guard let placemarks = placemarks else {
+                // return error
+                completionHandlerFrwdGeocoding(nil, error as? NSError)
+                return
+            }
             
-            textFieldLocation.isHidden = false
-            labelHeading.isHidden = false
-            
-            // adjust button title
-            buttonPosting.setTitle("Find on the Map", for: .normal)
-            
-            // set colors and background colors
-            viewTop.backgroundColor = colors.lightGray
-            viewBottom.backgroundColor = colors.lightGray
-            buttonCancel.setTitleColor(colors.grayishBlue, for: .normal)
+            if placemarks.count > 0, let coordinate = placemarks[0].location?.coordinate {
+                completionHandlerFrwdGeocoding(coordinate, nil)
+            } else {
+                completionHandlerFrwdGeocoding(nil, NSError(domain: "forwardGeocoding", code: 0, userInfo: [NSLocalizedDescriptionKey: "no geolocation found for search string"]))
+            }
         }
     }
     
+    func addLocationPinAndCenter(atCoordinates coordinates: CLLocationCoordinate2D) {
+        
+        // add a pin annotation
+        
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = coordinates
+        annotation.title = "Your location"
+        
+        mapView.addAnnotation(annotation)
+        
+        // set region
+        
+        let regionRadius: CLLocationDistance = 1000         // in meters
+        let coordinateRegion = MKCoordinateRegionMakeWithDistance(coordinates, regionRadius, regionRadius)
+        
+        mapView.setRegion(coordinateRegion, animated: true)
+    }
+}
+
+
+
+// MARK: InformationPosting View methods
+
+
+extension InformationPostingViewController {
+    
+    struct colors {
+        static let grayishBlue = UIColor(red: 0.318, green: 0.537, blue: 0.705, alpha: 1.0)
+        static let lightGray = UIColor(red: 0.905, green: 0.905, blue: 0.905, alpha: 1.0)
+        
+        static let lightGrayTranslucent = UIColor(red: 0.905, green: 0.905, blue: 0.905, alpha: 0.5)
+    }
+    
+    
+    // MARK: Init methods
+
     func initPostingButton() {
         buttonPosting.layer.cornerRadius = buttonPosting.frame.size.height/2
         buttonPosting.clipsToBounds = true
@@ -131,40 +224,54 @@ class InformationPostingViewController: UIViewController {
     }
     
     
+    // MARK: change page and enable/disable view
     
-    
-}
-
-
-// MARK Textfields delegates
-
-extension InformationPostingViewController: UITextFieldDelegate {
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        return true
+    func showInformationPostingView(forDefaultPage defaultPage: Bool) {
+        if defaultPage {
+            // hide and show corresponding labels, map and text fields
+            textFieldUrl.isHidden = true
+            mapView.isHidden = true
+            
+            textFieldLocation.isHidden = false
+            labelHeading.isHidden = false
+            
+            // adjust button title
+            buttonPosting.setTitle("Find on the Map", for: .normal)
+            
+            // set colors and background colors
+            viewTop.backgroundColor = colors.lightGray
+            viewBottom.backgroundColor = colors.lightGray
+            buttonCancel.setTitleColor(colors.grayishBlue, for: .normal)
+            
+        } else {
+            // show second view
+            
+            // hide and show corresponding labels, map and text fields
+            textFieldUrl.isHidden = false
+            mapView.isHidden = false
+            
+            textFieldLocation.isHidden = true
+            labelHeading.isHidden = true
+            
+            // adjust button title
+            buttonPosting.setTitle("Submit", for: .normal)
+            
+            // set colors and background colors
+            viewTop.backgroundColor = colors.grayishBlue
+            viewBottom.backgroundColor = colors.lightGrayTranslucent
+            buttonCancel.setTitleColor(.white, for: .normal)
+        }
     }
-}
 
-
-extension InformationPostingViewController: MKMapViewDelegate {
-    
-}
-
-
-
-// MARK View Colors extension
-
-extension InformationPostingViewController {
-    
-    struct colors {
-        static let grayishBlue = UIColor(red: 0.318, green: 0.537, blue: 0.705, alpha: 1.0)
-        static let lightGray = UIColor(red: 0.905, green: 0.905, blue: 0.905, alpha: 1.0)
+    func enableInformationPostingView(enable: Bool) {
         
-        static let lightGrayTranslucent = UIColor(red: 0.905, green: 0.905, blue: 0.905, alpha: 0.5)
+        // enable or disable all UI elements except cancel button
+        
+        labelHeading.isEnabled = enable
+        textFieldLocation.isEnabled = enable
+        textFieldUrl.isEnabled = enable
+        buttonPosting.isEnabled = enable
     }
-    
-    
 }
 
 
