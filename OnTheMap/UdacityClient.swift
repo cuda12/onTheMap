@@ -127,8 +127,6 @@ class UdacityClient {
     
     private func performTaskOnUdacityAPI(request: NSMutableURLRequest, completionHandler: @escaping (_ data: [String: AnyObject]?, _ error: NSError?) -> Void) {
         
-        // TODO TBC lower timeout ???
-        
         // create a shared URL session
         let session = URLSession.shared
         

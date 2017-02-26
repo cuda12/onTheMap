@@ -27,6 +27,31 @@ do {
 }
 
 
+let urlString = "https://tesst.ch/"
+let user = "{\"uniqueKey\":\"1234\"}"
+let url = URL(string: urlString)
+
+var mySmartURL = URLComponents(string: urlString)!
+
+mySmartURL.queryItems = [URLQueryItem]()
+mySmartURL.queryItems!.append(URLQueryItem(name: "unique", value: "1234"))
+
+
+mySmartURL.url!
+
+
+var compUrl = urlString + user
+
+var safeUrl = compUrl.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+
+print(safeUrl)
+
+
+
+
+
+
+
 /*
 // make a request
 

@@ -23,6 +23,8 @@ class TableViewController: UIViewController {
             UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(loadStudentLocations)),
             UIBarButtonItem(image: UIImage(named: "pin")!, style: .plain, target: self, action: #selector(showInformationPostView))
         ]
+        
+        parent!.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .reply, target: self, action: #selector(logout))
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -32,17 +34,18 @@ class TableViewController: UIViewController {
     }
     
     func loadStudentLocations() {
-        print("load student data")
-        ParseClient.sharedInstance().getStudentLocations { (studLocData, error) in
-            guard let studLocData = studLocData else {
-                print("no students locations found")
+        view.alpha = 0.5
+        ParseClient.sharedInstance().getStudentLocations { (data, error) in
+            // check with error nil and use alerts
+            guard let data = data else {
+                self.showAlert(title: "No data loaded", details: "Couldnt load any students data, check network and refresh")
                 return
             }
             
-            self.studentLocations = studLocData
+            self.studentLocations = data
             performUIUpdatesOnMain {
                 self.tableStudentLocations.reloadData()
-                print("table refreshed")
+                self.view.alpha = 1.0
             }
         }
     }
@@ -50,9 +53,25 @@ class TableViewController: UIViewController {
     func showInformationPostView() {
         
         let informationPostViewController = storyboard?.instantiateViewController(withIdentifier: "InformationPostingViewController") as! InformationPostingViewController
-        // TODO set init params
         
-        navigationController!.pushViewController(informationPostViewController, animated: true)
+        present(informationPostViewController, animated: true)
+    }
+    
+    func logout() {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    
+    // MARK: Alert Controller
+    
+    func showAlert(title: String, details: String) {
+        let alertController = UIAlertController()
+        
+        alertController.title = title
+        alertController.message = details
+        alertController.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel))
+        
+        present(alertController, animated: true, completion: nil)
     }
 }
 
@@ -72,6 +91,7 @@ extension TableViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "StudentLocationCellId") as UITableViewCell!
         cell?.textLabel?.text = "\(studentLocation.firstName) \(studentLocation.lastName)"
         cell?.imageView?.image = UIImage(named: "pin")
+        cell?.detailTextLabel?.text = studentLocation.updatedAt
         
         return cell!
     }
@@ -90,9 +110,7 @@ extension TableViewController: UITableViewDelegate, UITableViewDataSource {
             alertController.title = "No Valid Url"
             alertController.message = "The provided URL can't be opened, select a different student"
             
-            let dismissAction = UIAlertAction(title: "ok", style: UIAlertActionStyle.cancel) { (action) in
-                self.dismiss(animated: true, completion: nil)
-            }
+            let dismissAction = UIAlertAction(title: "ok", style: UIAlertActionStyle.cancel) 
             alertController.addAction(dismissAction)
             
             present(alertController, animated: true, completion: nil)

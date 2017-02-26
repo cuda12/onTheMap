@@ -12,28 +12,77 @@ class ParseClient {
     
     func getStudentLocations(_ completionHandlerGetLoc: @escaping (_ data: [StudentLocation]?, _ error: NSError?) -> Void) {
         
-        // TODO use constants
-        // TODO use queries
+        // query to get latest, hundert entries
+        let query = "limit=100&order=-updatedAt"
         
-        let request = NSMutableURLRequest(url: URL(string: Constants.API_URL)!)
-        request.addValue("QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr", forHTTPHeaderField: "X-Parse-Application-Id")
-        request.addValue("QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY", forHTTPHeaderField: "X-Parse-REST-API-Key")
+        // request data from Parse API
+        requestStudentLocationFromParseAPI(query: query, completionHandler: completionHandlerGetLoc)
+    }
+    
+    func getStudentLocation(forUser userId: String, completionHandlerGetLoc: @escaping (_ data: [StudentLocation]?, _ error: NSError?) -> Void) {
+        
+        // query to get location of given user
+        let query = "where={\"uniqueKey\":\"\(userId)\"}"
+        
+        // request data from Parse API
+        requestStudentLocationFromParseAPI(query: query, completionHandler: completionHandlerGetLoc)
+    }
+    
+    
+    private func requestStudentLocationFromParseAPI(query: String, completionHandler: @escaping (_ data: [StudentLocation]?, _ error: NSError?) -> Void) {
+        
+        // parse query sting in a valid url query on the parse API
+        let urlQuery = ("\(Constants.API_URL)?\(query)").addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
+        
+        let request = NSMutableURLRequest(url: URL(string: urlQuery)!)
+        request.addValue(Constants.API_ID, forHTTPHeaderField: Constants.API_ID_Field)
+        request.addValue(Constants.API_Key, forHTTPHeaderField: Constants.API_KEY_Field)
         
         performTaskOnParseAPI(request: request) { (data, error) in
-            // TODO
             guard let data = data else {
-                print("error loading data")
-                completionHandlerGetLoc(nil, error)
+                completionHandler(nil, error)
                 return
             }
             
             if let dataStudentLoc = data["results"] as? [[String: AnyObject]] {
-                completionHandlerGetLoc(StudentLocation.studentLocations(fromResults: dataStudentLoc), nil)
+                completionHandler(StudentLocation.studentLocations(fromResults: dataStudentLoc), nil)
             } else {
-                completionHandlerGetLoc(nil, NSError(domain: "getStudentLocations", code: 0, userInfo: [NSLocalizedDescriptionKey: "no students locations found for query"]))
+                completionHandler(nil, NSError(domain: "getStudentLocations", code: 0, userInfo: [NSLocalizedDescriptionKey: "no students locations found for query"]))
             }
         }
     }
+    
+    
+    func setStudentLocation(forStudentLocation location: StudentLocation, completionHandlerSetLoc: @escaping (_ success: Bool, _ error: NSError?) -> Void) {
+        
+        // distinguish between 'add new values' and 'update existing users id' depending if student location has an objectId
+        var urlMethod = Constants.API_URL
+        var httpMethod = "POST"
+        
+        if let objectId = location.objectId {
+            urlMethod.append("/\(objectId)")
+            httpMethod = "PUT"
+        }
+        
+        // build request
+        let request = NSMutableURLRequest(url: URL(string: urlMethod)!)
+        request.httpMethod = httpMethod
+        request.addValue(Constants.API_ID, forHTTPHeaderField: Constants.API_ID_Field)
+        request.addValue(Constants.API_Key, forHTTPHeaderField: Constants.API_KEY_Field)
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = "{\"uniqueKey\": \"\(location.uniqueKey)\", \"firstName\": \"\(location.firstName)\", \"lastName\": \"\(location.lastName)\",\"mapString\": \"\(location.mapString)\", \"mediaURL\": \"\(location.mediaUrl)\",\"latitude\": \(location.latitude), \"longitude\": \(location.longitude)}".data(using: String.Encoding.utf8)
+        
+        
+        performTaskOnParseAPI(request: request) { (data, error) in
+            guard error == nil else {
+                completionHandlerSetLoc(false, error)
+                return
+            }
+            
+            completionHandlerSetLoc(true, nil)
+        }
+    }
+    
     
     private func performTaskOnParseAPI(request: NSMutableURLRequest, completionHandler: @escaping (_ data: [String: AnyObject]?, _ error: NSError?) -> Void) {
         

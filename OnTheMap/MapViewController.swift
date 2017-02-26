@@ -15,7 +15,6 @@ class MapViewController: UIViewController {
     
     var studentLocations = [StudentLocation]()
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -25,6 +24,7 @@ class MapViewController: UIViewController {
             UIBarButtonItem(image: UIImage(named: "pin")!, style: .plain, target: self, action: #selector(showInformationPostView))
         ]
         
+        parent!.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .reply, target: self, action: #selector(logout))
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -38,26 +38,31 @@ class MapViewController: UIViewController {
     func showInformationPostView() {
         
         let informationPostViewController = storyboard?.instantiateViewController(withIdentifier: "InformationPostingViewController") as! InformationPostingViewController
-        // TODO set init params
         
-        navigationController!.pushViewController(informationPostViewController, animated: true)
+        present(informationPostViewController, animated: true)
+    }
+    
+    
+    func logout() {
+        dismiss(animated: true, completion: nil)
     }
     
     func loadStudentLocations() {
-        print("refresh map")
+        view.alpha = 0.5
         ParseClient.sharedInstance().getStudentLocations { (data, error) in
-            // TODO handle no student data
             guard let data = data else {
-                print("no students data loaded")
+                self.showAlert(title: "No data loaded", details: "Couldnt load any students data, check network and refresh")
                 return
             }
             
             self.studentLocations = data
             performUIUpdatesOnMain {
                 self.addPinsToMapforStudents()
+                self.view.alpha = 1.0
             }
         }
     }
+    
     
     func addPinsToMapforStudents() {
         for studentLocation in studentLocations {
@@ -72,6 +77,18 @@ class MapViewController: UIViewController {
             
             mapView.addAnnotation(annotation)
         }
+    }
+
+    // MARK: Alert Controller
+    
+    func showAlert(title: String, details: String) {
+        let alertController = UIAlertController()
+        
+        alertController.title = title
+        alertController.message = details
+        alertController.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel))
+        
+        present(alertController, animated: true, completion: nil)
     }
 }
 
@@ -109,9 +126,7 @@ extension MapViewController: MKMapViewDelegate {
                 alertController.title = "No Valid Url"
                 alertController.message = "The provided URL can't be opened, select a different student"
                 
-                let dismissAction = UIAlertAction(title: "ok", style: UIAlertActionStyle.cancel) { (action) in
-                    self.dismiss(animated: true, completion: nil)
-                }
+                let dismissAction = UIAlertAction(title: "ok", style: UIAlertActionStyle.cancel)
                 alertController.addAction(dismissAction)
                 
                 present(alertController, animated: true, completion: nil)

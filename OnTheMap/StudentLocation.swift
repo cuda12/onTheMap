@@ -12,7 +12,7 @@ struct StudentLocation {
     
     // MARK: Properties
     
-    let objectId: String
+    let objectId: String?
     let uniqueKey: String
     let firstName: String
     let lastName: String
@@ -20,13 +20,13 @@ struct StudentLocation {
     let mediaUrl: String
     let latitude: Double
     let longitude: Double
-    let createdAt: String
-    let updatedAt: String
+    let createdAt: String?
+    let updatedAt: String?
     
     
     // MARK: Initializers
     
-    // Note only valid entries are considered
+    // Note only valid entries (complete) are considered to be initialized as dictionaries
     init?(dictionary: [String: AnyObject]) {
         if let tmpObjectId = dictionary[ParseClient.JSONResponseKeys.ObjectId] as? String,
             let tmpUniqueKey = dictionary[ParseClient.JSONResponseKeys.UniqueKey] as? String,
@@ -54,10 +54,23 @@ struct StudentLocation {
         }
     }
     
+    // to initialize with user data for new locations to be added
+    
+    init(UserDetails: UdacityClient.AccountDetails, MapString: String, MediaUrl: String, Latitude: Double, Longitude: Double, ObjectId: String?) {
+        objectId = ObjectId
+        uniqueKey = UserDetails.UserID
+        firstName = UserDetails.FirstName
+        lastName = UserDetails.LastName
+        mapString = MapString
+        mediaUrl = MediaUrl
+        latitude = Latitude
+        longitude = Longitude
+        createdAt = nil
+        updatedAt = nil
+    }
+    
     
     static func studentLocations(fromResults results: [[String: AnyObject]]) -> [StudentLocation] {
-        
-        // TODO add only new students!
         
         var studentLocations = [StudentLocation]()
         

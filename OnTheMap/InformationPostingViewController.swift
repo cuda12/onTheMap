@@ -11,7 +11,7 @@ import MapKit
 
 class InformationPostingViewController: UIViewController {
 
-    var postedLocationString: String?
+    var prevObjectId: String?
     var postedLocationCoordiantes: CLLocationCoordinate2D?
     
     @IBOutlet weak var viewTop: UIView!
@@ -42,11 +42,12 @@ class InformationPostingViewController: UIViewController {
         // init header label text and its attributes
         initHeaderLabel()
         
-        // set up Information Posting View UI
+        // set up Information Posting View UI and disable UI till user info are checked
         showInformationPostingView(forDefaultPage: true)
+        enableInformationPostingView(enable: false)
     
-        print(UdacityClient.sharedInstance().userAccountDetails!)
-        
+        // check if user already has set a location
+        loadUserLocation()
     }
     
     
@@ -55,15 +56,16 @@ class InformationPostingViewController: UIViewController {
     @IBAction func togglePostingButton(_ sender: Any) {
         // depending on the page of the view, button either shows the entered location on the map or adds it to parse databse.
         
+        enableInformationPostingView(enable: false)
+        
         if let searchString = textFieldLocation.text, postedLocationCoordiantes == nil {
             
             // show location on map
             
-            enableInformationPostingView(enable: false)
             forwardGeocoding(address: searchString, completionHandlerFrwdGeocoding: { (coordinates, error) in
                 guard let coordinates = coordinates else {
                     performUIUpdatesOnMain {
-                        self.showAlertCancel(title: "Location not found", details: "Check your input and make sure your cell is connected to the web")
+                        self.showAlert(title: "Location not found", details: "Check your input and make sure your cell is connected to the web")
                         self.enableInformationPostingView(enable: true)
                     }
                     return
@@ -81,34 +83,76 @@ class InformationPostingViewController: UIViewController {
             // submit location
             let app = UIApplication.shared
             
-            if let urlUser = URL(string: textFieldUrl.text!), app.canOpenURL(urlUser) {
-                print("valid url gonna post: \(urlUser)")
+            if let urlPostedByUser = URL(string: textFieldUrl.text!), app.canOpenURL(urlPostedByUser) {
+                
+                // build student location info
+                let userStudentLocation = StudentLocation(UserDetails: UdacityClient.sharedInstance().userAccountDetails!, MapString: textFieldLocation.text! , MediaUrl: textFieldUrl.text!, Latitude: Double((postedLocationCoordiantes?.latitude)!), Longitude: Double((postedLocationCoordiantes?.longitude)!), ObjectId: prevObjectId)
+                
+                // post it
+                ParseClient.sharedInstance().setStudentLocation(forStudentLocation: userStudentLocation, completionHandlerSetLoc: { (success, error) in
+                    if success {
+                        performUIUpdatesOnMain {
+                            self.dismiss(animated: true, completion: nil)
+                        }
+                    } else {
+                        self.showAlert(title: "Failed to add Location", details: "Check your network connection and try again")
+                    }
+                })
+                
             } else {
-                showAlertCancel(title: "Invalid URL", details: "Please provide a valid URL")
+                showAlert(title: "Invalid URL", details: "Please provide a valid URL")
             }
+            
+            enableInformationPostingView(enable: true)
         }
     }
     
     @IBAction func toggleCancelButton(_ sender: Any) {
         
         // TBC cancelGeocode() ?? check docu
-        print("TODO dismiss view")
+        dismiss(animated: true, completion: nil)
     }
+    
+    
+    func loadUserLocation() {
+        // check if user already set a location, if so set instance member to latest
+        
+        if let userId = UdacityClient.sharedInstance().userAccountDetails?.UserID {
+            ParseClient.sharedInstance().getStudentLocation(forUser: userId, completionHandlerGetLoc: { (data, error) in
+                if error == nil {
+                    // store latest entry
+                    if let usersLocation = data?[0] {
+                        self.prevObjectId = usersLocation.objectId!
+                    }
+                    
+                    // user confirm if existing data shall be overwritten
+                    let confirmAlert = UIAlertController(title: "Update Location", message: "Are you sure to update your previously added location?", preferredStyle: UIAlertControllerStyle.alert)
+                    confirmAlert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) in
+                        performUIUpdatesOnMain {
+                            self.enableInformationPostingView(enable: true)
+                        }
+                    }))
+                    confirmAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
+                        self.dismiss(animated: true, completion: nil)
+                    }))
+                    
+                    self.present(confirmAlert, animated: true, completion: nil)
+                }
+            })
+        }
+    }
+
     
     
     // MARK: Alert Controller
     
-    func showAlertCancel(title: String, details: String) {
+    func showAlert(title: String, details: String, buttonTitle: String = "Cancel") {
         let alertController = UIAlertController()
         
         alertController.title = title
         alertController.message = details
-        
-        let dismissAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel) { (action) in
-            self.dismiss(animated: true, completion: nil)
-        }
-        alertController.addAction(dismissAction)
-        
+        alertController.addAction(UIAlertAction(title: buttonTitle, style: UIAlertActionStyle.cancel))
+ 
         present(alertController, animated: true, completion: nil)
     }
 }
