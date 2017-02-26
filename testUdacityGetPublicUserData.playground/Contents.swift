@@ -16,12 +16,18 @@ do {
     let jsonData = try JSONSerialization.jsonObject(with: rawJSON!, options: .allowFragments) as! [String: AnyObject]
     print(jsonData)
     
+    
+    if let usersData = jsonData["user"] as? [String: AnyObject]  {
+        print(usersData)
+    }
+    
+    
 } catch {
     print("cant parse json")
 }
 
 
-
+/*
 // make a request
 
 let urlString = "https://www.udacity.com/api/users/9387594692"
@@ -50,7 +56,7 @@ let task = session.dataTask(with: request as URLRequest) { data, response, error
 }
 task.resume()
 
-
+*/
 
 /* RESULTS of UrlRequest
  

@@ -13,22 +13,33 @@ import Foundation
 
 class UdacityClient {
     
+    // MARK: members
+    
+    var userAccountDetails: AccountDetails?
+    
     // MARK: Authentication method
     
     func authenticateUdacityUser(_ username: String, _ password: String, completionHandlerAuth: @escaping (_ success: Bool, _ errorMsg: String?) -> Void) {
         
         // To authenticate Udacity API requests - get a session ID
-        getSessionID(username, password) { (success, errorMsg) in
+        getSessionID(username, password) { (success, userId, errorMsg) in
             if success {
-                // successfuly logged in, thus delete session ID
-                self.deleteSessionID({ (success, errorMsg) in
-                    if success {
-                        // successfully deleted Session ID
-                        completionHandlerAuth(true, nil)
-                    } else {
-                        // successfully logged in but session ID not properly delete, since session ID will expire within 24 hours, user is granted with access
-                        completionHandlerAuth(true, errorMsg!)
-                    }
+                // successfuly logged in
+                self.getPublicUserData(userId!, completionHandler: {(successUserDetails, errorMsgUserDetails) in
+                    // and then delete the session ID in any case
+                    self.deleteSessionID({ (success, errorMsg) in
+                        if success && successUserDetails {
+                            // successfully deleted Session ID
+                            completionHandlerAuth(true, nil)
+                        } else {
+                            // successfully logged in but session ID not properly delete, or no user details retrieved, since session ID will expire within 24 hours, user is granted with access
+                            if let errorMsgUserDetails = errorMsgUserDetails {
+                                completionHandlerAuth(true, errorMsgUserDetails)
+                            } else {
+                                completionHandlerAuth(true, errorMsg!)
+                            }
+                        }
+                    })
                 })
             } else {
                 // login failed
@@ -39,7 +50,7 @@ class UdacityClient {
     
     // MARK: API Methods
     
-    private func getSessionID(_ username: String, _ password: String, completionHandlerGetSessionID: @escaping (_ success: Bool, _ errorMsg: String?) -> Void) {
+    private func getSessionID(_ username: String, _ password: String, completionHandlerGetSessionID: @escaping (_ success: Bool, _ userID: String?, _ errorMsg: String?) -> Void) {
         
         let request = NSMutableURLRequest(url: URL(string: Constants.ApiSessionUrl)!)
         request.httpMethod = "POST"
@@ -51,17 +62,15 @@ class UdacityClient {
             
             // guard for data, i.e. no error
             guard let data = data else {
-                completionHandlerGetSessionID(false, "Host unreachable - check your network connection")
+                completionHandlerGetSessionID(false, nil, "Host unreachable - check your network connection")
                 return
             }
             
             // parse data - check if credentials are valid
             if let accountDetails = data["account"] as? [String: AnyObject], (accountDetails["registered"] as? Bool)! {
-                print(accountDetails)   // TODO TBC dont save users ID, key?
-                Constants.AccountID = accountDetails["key"]! as! String
-                completionHandlerGetSessionID(true, nil)
+                completionHandlerGetSessionID(true, accountDetails["key"]! as? String, nil)
             } else {
-                completionHandlerGetSessionID(false, "Account not found or invalid credentials")
+                completionHandlerGetSessionID(false, nil, "Account not found or invalid credentials")
             }
         }
     }
@@ -94,22 +103,25 @@ class UdacityClient {
     }
     
     
-    func getPublicUserData(_ userId: String, completionHandler: @escaping (_ data: [String: AnyObject]?, _ errorMsg: String?) -> Void) {
+    private func getPublicUserData(_ userId: String, completionHandler: @escaping (_ success: Bool, _ errorMsg: String?) -> Void) {
         
         let request = NSMutableURLRequest(url: URL(string: "\(Constants.ApiUserUrl)/\(userId)")!)
-        
-        print("\(Constants.ApiUserUrl)/\(userId)")
         
         performTaskOnUdacityAPI(request: request) { (data, error) in
             
             // check if no error occured getting public user data
-            if error != nil {
-                completionHandler(nil, "Error loading public user data")
+            guard (error == nil), let usersData = data?["user"] as? [String: AnyObject] else {
+                completionHandler(false, "Error loading public user data")
                 return
             }
             
-            // TODO strip required info
-            completionHandler(data!, nil)
+            let firstName = usersData["first_name"] as! String
+            let lastName = usersData["last_name"] as! String
+            
+            // add data to users detail within the udacityClient
+            self.userAccountDetails = AccountDetails(UserID: userId, LastName: lastName, FirstName: firstName)
+            
+            completionHandler(true, nil)
         }
     }
     
@@ -168,8 +180,11 @@ extension UdacityClient {
         static let ApiUrl = "https://www.udacity.com/api"
         static let ApiSessionUrl = "\(Constants.ApiUrl)/session"
         static let ApiUserUrl = "\(Constants.ApiUrl)/users"
-        static var AccountID = "9387594692" // TODO set to null string
     }
     
-    
+    struct AccountDetails {
+        var UserID: String
+        var LastName: String
+        var FirstName: String
+    }
 }

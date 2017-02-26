@@ -44,16 +44,8 @@ class InformationPostingViewController: UIViewController {
         
         // set up Information Posting View UI
         showInformationPostingView(forDefaultPage: true)
-        
-        // TODO move to right place
-        UdacityClient.sharedInstance().getPublicUserData(UdacityClient.Constants.AccountID) { (data, errorMsg) in
-            guard let userData = data else {
-                print(errorMsg!)
-                return
-            }
-            
-            print(userData)
-        }
+    
+        print(UdacityClient.sharedInstance().userAccountDetails!)
         
     }
     
