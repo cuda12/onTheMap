@@ -10,6 +10,11 @@
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
+    <customFonts key="customFonts">
+        <array key="Roboto-Thin.ttf">
+            <string>Roboto-Thin</string>
+        </array>
+    </customFonts>
     <scenes>
         <!--Login View Controller-->
         <scene sceneID="tne-QT-ifu">
@@ -253,7 +258,7 @@
         <!--Information Posting View Controller-->
         <scene sceneID="qzT-f3-zKN">
             <objects>
-                <viewController id="gMK-PD-jEh" customClass="InformationPostingViewController" customModule="OnTheMap" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="InformationPostingViewController" id="gMK-PD-jEh" customClass="InformationPostingViewController" customModule="OnTheMap" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="b4u-5L-hw8"/>
                         <viewControllerLayoutGuide type="bottom" id="etb-le-H9P"/>
@@ -347,11 +352,22 @@
                                             <outlet property="delegate" destination="gMK-PD-jEh" id="BjW-uL-07K"/>
                                         </connections>
                                     </mapView>
+                                    <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="6i4-f5-86J">
+                                        <rect key="frame" x="150" y="132" width="20" height="20"/>
+                                    </activityIndicatorView>
+                                    <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="searching for location on map" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="g7D-6w-8nh">
+                                        <rect key="frame" x="64" y="160" width="192.5" height="18"/>
+                                        <fontDescription key="fontDescription" name="Roboto-Thin" family="Roboto" pointSize="15"/>
+                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                                 <color key="backgroundColor" red="0.31798118349999999" green="0.53723663089999996" blue="0.70494377610000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
+                                    <constraint firstItem="g7D-6w-8nh" firstAttribute="centerX" secondItem="cYS-sY-McT" secondAttribute="centerX" id="8sZ-fB-En4"/>
                                     <constraint firstItem="To1-Oc-um4" firstAttribute="top" secondItem="cYS-sY-McT" secondAttribute="top" constant="20" id="BYa-ar-nYT"/>
                                     <constraint firstItem="Ws3-lH-j4p" firstAttribute="leading" secondItem="cYS-sY-McT" secondAttribute="leading" id="D6H-N6-JMm"/>
+                                    <constraint firstItem="g7D-6w-8nh" firstAttribute="top" secondItem="6i4-f5-86J" secondAttribute="bottom" constant="8" id="RsF-a4-UHf"/>
                                     <constraint firstAttribute="trailing" secondItem="To1-Oc-um4" secondAttribute="trailing" constant="8" id="U9H-JV-sbn"/>
                                     <constraint firstAttribute="bottom" secondItem="Ws3-lH-j4p" secondAttribute="bottom" id="c9f-6Y-H9A"/>
                                     <constraint firstItem="Ws3-lH-j4p" firstAttribute="top" secondItem="cYS-sY-McT" secondAttribute="top" id="ifO-bD-D1V"/>
@@ -391,15 +407,19 @@
                             <constraint firstItem="NJv-sJ-Lb5" firstAttribute="leading" secondItem="qXm-QT-RZO" secondAttribute="leading" id="NEr-od-0Wi"/>
                             <constraint firstAttribute="trailing" secondItem="8P4-if-8ib" secondAttribute="trailing" id="Qiw-2Y-cgs"/>
                             <constraint firstItem="cYS-sY-McT" firstAttribute="leading" secondItem="qXm-QT-RZO" secondAttribute="leading" id="Sfp-BS-7Eb"/>
+                            <constraint firstItem="6i4-f5-86J" firstAttribute="centerY" secondItem="qXm-QT-RZO" secondAttribute="centerY" id="Ta9-2r-PUL"/>
                             <constraint firstItem="8P4-if-8ib" firstAttribute="leading" secondItem="qXm-QT-RZO" secondAttribute="leading" id="oWC-PV-HLZ"/>
                             <constraint firstItem="NJv-sJ-Lb5" firstAttribute="top" secondItem="qXm-QT-RZO" secondAttribute="top" id="req-j1-jro"/>
                             <constraint firstItem="etb-le-H9P" firstAttribute="top" secondItem="8P4-if-8ib" secondAttribute="bottom" id="rvd-Su-aQs"/>
                             <constraint firstItem="cYS-sY-McT" firstAttribute="top" secondItem="NJv-sJ-Lb5" secondAttribute="bottom" id="t7d-DQ-Rkd"/>
+                            <constraint firstItem="6i4-f5-86J" firstAttribute="centerX" secondItem="qXm-QT-RZO" secondAttribute="centerX" id="zRc-cs-64Q"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="activityIncidactorGeo" destination="6i4-f5-86J" id="iLP-CI-8zu"/>
                         <outlet property="buttonCancel" destination="X6d-Lv-Yfu" id="nNi-DN-p90"/>
                         <outlet property="buttonPosting" destination="zKl-5i-C9A" id="cp0-l1-ZEu"/>
+                        <outlet property="labelActivityGeo" destination="g7D-6w-8nh" id="Oq1-df-Pfh"/>
                         <outlet property="labelHeading" destination="3sm-Cx-T0d" id="Xl6-Hg-c6l"/>
                         <outlet property="mapView" destination="Ws3-lH-j4p" id="cf7-aY-HwE"/>
                         <outlet property="textFieldLocation" destination="To1-Oc-um4" id="QMo-ib-Hun"/>

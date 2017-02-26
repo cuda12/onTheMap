@@ -24,6 +24,8 @@ class InformationPostingViewController: UIViewController {
     @IBOutlet weak var textFieldLocation: UITextField!
     @IBOutlet weak var textFieldUrl: UITextField!
     @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var activityIncidactorGeo: UIActivityIndicatorView!
+    @IBOutlet weak var labelActivityGeo: UILabel!
     
     
     
@@ -42,6 +44,17 @@ class InformationPostingViewController: UIViewController {
         
         // set up Information Posting View UI
         showInformationPostingView(forDefaultPage: true)
+        
+        // TODO move to right place
+        UdacityClient.sharedInstance().getPublicUserData(UdacityClient.Constants.AccountID) { (data, errorMsg) in
+            guard let userData = data else {
+                print(errorMsg!)
+                return
+            }
+            
+            print(userData)
+        }
+        
     }
     
     
@@ -271,6 +284,10 @@ extension InformationPostingViewController {
         textFieldLocation.isEnabled = enable
         textFieldUrl.isEnabled = enable
         buttonPosting.isEnabled = enable
+        
+        view.alpha = enable ? 1.0 : 0.5
+        activityIncidactorGeo.isHidden = enable
+        labelActivityGeo.isHidden = enable
     }
 }
 

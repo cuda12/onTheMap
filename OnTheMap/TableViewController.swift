@@ -21,7 +21,7 @@ class TableViewController: UIViewController {
         // add navigation bar items
         parent!.navigationItem.rightBarButtonItems = [
             UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(loadStudentLocations)),
-            UIBarButtonItem(image: UIImage(named: "pin")!, style: .plain, target: self, action: #selector(test))
+            UIBarButtonItem(image: UIImage(named: "pin")!, style: .plain, target: self, action: #selector(showInformationPostView))
         ]
     }
     
@@ -47,8 +47,12 @@ class TableViewController: UIViewController {
         }
     }
     
-    func test() {
-        print("test")
+    func showInformationPostView() {
+        
+        let informationPostViewController = storyboard?.instantiateViewController(withIdentifier: "InformationPostingViewController") as! InformationPostingViewController
+        // TODO set init params
+        
+        navigationController!.pushViewController(informationPostViewController, animated: true)
     }
 }
 

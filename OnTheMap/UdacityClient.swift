@@ -83,8 +83,7 @@ class UdacityClient {
         performTaskOnUdacityAPI(request: request) { (data, error) in
             
             // check if no error occured deleting session ID
-            if let error = error {
-                print(error)             // for debugging purpose
+            if error != nil {
                 completionHandlerDeleteSessionID(false, "Error deleting the Udacity SessionID")
                 return
             }
@@ -94,6 +93,25 @@ class UdacityClient {
         }
     }
     
+    
+    func getPublicUserData(_ userId: String, completionHandler: @escaping (_ data: [String: AnyObject]?, _ errorMsg: String?) -> Void) {
+        
+        let request = NSMutableURLRequest(url: URL(string: "\(Constants.ApiUserUrl)/\(userId)")!)
+        
+        print("\(Constants.ApiUserUrl)/\(userId)")
+        
+        performTaskOnUdacityAPI(request: request) { (data, error) in
+            
+            // check if no error occured getting public user data
+            if error != nil {
+                completionHandler(nil, "Error loading public user data")
+                return
+            }
+            
+            // TODO strip required info
+            completionHandler(data!, nil)
+        }
+    }
     
     private func performTaskOnUdacityAPI(request: NSMutableURLRequest, completionHandler: @escaping (_ data: [String: AnyObject]?, _ error: NSError?) -> Void) {
         
@@ -115,6 +133,7 @@ class UdacityClient {
             // parse stripped data as json
             do {
                 let jsonData = try JSONSerialization.jsonObject(with: data.subdata(in: range), options: .allowFragments) as! [String: AnyObject]
+                
                 completionHandler(jsonData, nil)
                 
             } catch {
@@ -146,7 +165,9 @@ extension UdacityClient {
     // MARK: Constants
     
     struct Constants {
-        static let ApiSessionUrl = "https://www.udacity.com/api/session"
+        static let ApiUrl = "https://www.udacity.com/api"
+        static let ApiSessionUrl = "\(Constants.ApiUrl)/session"
+        static let ApiUserUrl = "\(Constants.ApiUrl)/users"
         static var AccountID = "9387594692" // TODO set to null string
     }
     

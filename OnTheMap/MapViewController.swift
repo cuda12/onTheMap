@@ -19,11 +19,10 @@ class MapViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        
         // add navigation controll buttons
         parent!.navigationItem.rightBarButtonItems = [
             UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(loadStudentLocations)),
-            UIBarButtonItem(image: UIImage(named: "pin")!, style: .plain, target: self, action: #selector(test))
+            UIBarButtonItem(image: UIImage(named: "pin")!, style: .plain, target: self, action: #selector(showInformationPostView))
         ]
         
     }
@@ -35,10 +34,15 @@ class MapViewController: UIViewController {
         loadStudentLocations()
     }
     
-    func test() {
-        print("test")
+    
+    func showInformationPostView() {
+        
+        let informationPostViewController = storyboard?.instantiateViewController(withIdentifier: "InformationPostingViewController") as! InformationPostingViewController
+        // TODO set init params
+        
+        navigationController!.pushViewController(informationPostViewController, animated: true)
     }
-   
+    
     func loadStudentLocations() {
         print("refresh map")
         ParseClient.sharedInstance().getStudentLocations { (data, error) in
