@@ -29,10 +29,6 @@ class LoginViewController: UIViewController {
         super.viewWillAppear(animated)
         
         enableUI(enable: true)
-        
-        // TODO debugging
-        inputEmail.text = "andi@barracudas.ch"
-        inputPassword.text = "catfish12"
     }
 
 
