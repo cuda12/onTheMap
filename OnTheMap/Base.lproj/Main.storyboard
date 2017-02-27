@@ -189,17 +189,23 @@
                                     <outlet property="delegate" destination="qrg-TW-2TF" id="qrY-JI-eMs"/>
                                 </connections>
                             </tableView>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="BPX-AR-81E">
+                                <rect key="frame" x="150" y="274" width="20" height="20"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="ajM-LS-JBh" firstAttribute="top" secondItem="4Ew-BY-bVr" secondAttribute="bottom" id="6MU-c6-cKL"/>
+                            <constraint firstItem="BPX-AR-81E" firstAttribute="centerX" secondItem="qe1-dE-TUK" secondAttribute="centerX" id="Fvj-aw-atx"/>
                             <constraint firstItem="4Ew-BY-bVr" firstAttribute="leading" secondItem="qe1-dE-TUK" secondAttribute="leading" id="fXA-8c-KSa"/>
                             <constraint firstItem="4Ew-BY-bVr" firstAttribute="top" secondItem="qe1-dE-TUK" secondAttribute="top" id="oJE-K6-NDH"/>
+                            <constraint firstItem="BPX-AR-81E" firstAttribute="centerY" secondItem="qe1-dE-TUK" secondAttribute="centerY" id="s7y-uv-QOb"/>
                             <constraint firstAttribute="trailing" secondItem="4Ew-BY-bVr" secondAttribute="trailing" id="u9C-Re-75W"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="List" image="list" id="GM1-8e-PpD"/>
                     <connections>
+                        <outlet property="activityIndicator" destination="BPX-AR-81E" id="A8s-27-84B"/>
                         <outlet property="tableStudentLocations" destination="4Ew-BY-bVr" id="yfi-4r-lZX"/>
                     </connections>
                 </viewController>
@@ -458,9 +464,14 @@
                                     <outlet property="delegate" destination="69W-8W-0NO" id="Ygb-TX-f42"/>
                                 </connections>
                             </mapView>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="Jcz-Z9-eMW">
+                                <rect key="frame" x="150" y="274" width="20" height="20"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="Jcz-Z9-eMW" firstAttribute="centerX" secondItem="Vn0-my-3fA" secondAttribute="centerX" id="0eE-VM-h7a"/>
+                            <constraint firstItem="Jcz-Z9-eMW" firstAttribute="centerY" secondItem="Vn0-my-3fA" secondAttribute="centerY" id="Gz0-55-ESa"/>
                             <constraint firstItem="eNP-UU-2n6" firstAttribute="top" secondItem="fqZ-RU-RoJ" secondAttribute="bottom" id="Uqq-mK-7ls"/>
                             <constraint firstAttribute="trailing" secondItem="fqZ-RU-RoJ" secondAttribute="trailing" id="XYX-qL-aYn"/>
                             <constraint firstItem="fqZ-RU-RoJ" firstAttribute="leading" secondItem="Vn0-my-3fA" secondAttribute="leading" id="qu1-jT-hN0"/>
@@ -469,6 +480,7 @@
                     </view>
                     <tabBarItem key="tabBarItem" title="map" image="map" id="82V-85-ksv"/>
                     <connections>
+                        <outlet property="activityIndicator" destination="Jcz-Z9-eMW" id="gvj-z4-oZs"/>
                         <outlet property="mapView" destination="fqZ-RU-RoJ" id="NdV-Z5-l9m"/>
                     </connections>
                 </viewController>
