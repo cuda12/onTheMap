@@ -26,29 +26,31 @@ struct StudentLocation {
     
     // MARK: Initializers
     
-    // Note only valid entries (complete) are considered to be initialized as dictionaries
+    // to initialize with dictionary
+    // Note: only valid entries (complete) are considered to be initialized as dictionaries
+    
     init?(dictionary: [String: AnyObject]) {
-        if let tmpObjectId = dictionary[ParseClient.JSONResponseKeys.ObjectId] as? String,
-            let tmpUniqueKey = dictionary[ParseClient.JSONResponseKeys.UniqueKey] as? String,
-            let tmpFirstName = dictionary[ParseClient.JSONResponseKeys.FirstName] as? String,
-            let tmpLastName = dictionary[ParseClient.JSONResponseKeys.LastName] as? String,
-            let tmpMapString = dictionary[ParseClient.JSONResponseKeys.MapString] as? String,
-            let tmpMediaUrl = dictionary[ParseClient.JSONResponseKeys.MediaUrl] as? String,
-            let tmpLatitude = dictionary[ParseClient.JSONResponseKeys.Latitude] as? Double,
-            let tmpLongitude = dictionary[ParseClient.JSONResponseKeys.Longitude] as? Double,
-            let tmpCreatedAt = dictionary[ParseClient.JSONResponseKeys.CreatedAt] as? String,
-            let tmpUpdatedAt = dictionary[ParseClient.JSONResponseKeys.UpdateAt] as? String {
+        if let ObjectId = dictionary[ParseClient.JSONResponseKeys.ObjectId] as? String,
+            let UniqueKey = dictionary[ParseClient.JSONResponseKeys.UniqueKey] as? String,
+            let FirstName = dictionary[ParseClient.JSONResponseKeys.FirstName] as? String,
+            let LastName = dictionary[ParseClient.JSONResponseKeys.LastName] as? String,
+            let MapString = dictionary[ParseClient.JSONResponseKeys.MapString] as? String,
+            let MediaUrl = dictionary[ParseClient.JSONResponseKeys.MediaUrl] as? String,
+            let Latitude = dictionary[ParseClient.JSONResponseKeys.Latitude] as? Double,
+            let Longitude = dictionary[ParseClient.JSONResponseKeys.Longitude] as? Double,
+            let CreatedAt = dictionary[ParseClient.JSONResponseKeys.CreatedAt] as? String,
+            let UpdatedAt = dictionary[ParseClient.JSONResponseKeys.UpdateAt] as? String {
             
-            objectId = tmpObjectId
-            uniqueKey = tmpUniqueKey
-            firstName = tmpFirstName
-            lastName = tmpLastName
-            mapString = tmpMapString
-            mediaUrl = tmpMediaUrl
-            latitude = tmpLatitude
-            longitude = tmpLongitude
-            createdAt = tmpCreatedAt
-            updatedAt = tmpUpdatedAt
+            objectId = ObjectId
+            uniqueKey = UniqueKey
+            firstName = FirstName
+            lastName = LastName
+            mapString = MapString
+            mediaUrl = MediaUrl
+            latitude = Latitude
+            longitude = Longitude
+            createdAt = CreatedAt
+            updatedAt = UpdatedAt
         } else {
             return nil
         }
@@ -69,6 +71,8 @@ struct StudentLocation {
         updatedAt = nil
     }
     
+    
+    // MARK: getter method to parse result dictionaries
     
     static func studentLocations(fromResults results: [[String: AnyObject]]) -> [StudentLocation] {
         

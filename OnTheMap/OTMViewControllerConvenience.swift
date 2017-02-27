@@ -15,13 +15,18 @@ import UIKit
 
 class OTMViewControllerConvenience: UIViewController {
     
+    // MARK: members
+    
     var studentLocations = [StudentLocation]()
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    
+    
+    // MARK: View controller functionalities shared by the MapViewController and TableViewController
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // add navigation controll buttons
+        // add navigation control buttons
         parent!.navigationItem.rightBarButtonItems = [
             UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(loadStudentLocations)),
             UIBarButtonItem(image: UIImage(named: "pin")!, style: .plain, target: self, action: #selector(showInformationPostView))
@@ -30,6 +35,8 @@ class OTMViewControllerConvenience: UIViewController {
         parent!.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .reply, target: self, action: #selector(logout))
     }
     
+    
+    // MARK: get Student Location data from the ParseClient
     
     func loadStudentLocations() {
         // To be overwritten in child class
@@ -50,6 +57,8 @@ class OTMViewControllerConvenience: UIViewController {
         }
     }
 
+    
+    // MARK: transaction methods
     
     func showInformationPostView() {
         let informationPostViewController = storyboard?.instantiateViewController(withIdentifier: "InformationPostingViewController") as! InformationPostingViewController
@@ -73,6 +82,9 @@ class OTMViewControllerConvenience: UIViewController {
         
         present(alertController, animated: true, completion: nil)
     }
+    
+    
+    // MARK: Helper
     
     func enableView(enable: Bool) {
         view.alpha = enable ? 1.0 : 0.5

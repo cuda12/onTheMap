@@ -29,7 +29,6 @@ class MapViewController: OTMViewControllerConvenience {
         }
     }
     
-    
     func addPinsToMapforStudents() {
         for studentLocation in studentLocations {
             let coordinates = CLLocationCoordinate2D(latitude: CLLocationDegrees(studentLocation.latitude), longitude: CLLocationDegrees(studentLocation.longitude))

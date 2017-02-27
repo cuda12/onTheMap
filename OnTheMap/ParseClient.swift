@@ -10,6 +10,8 @@ import Foundation
 
 class ParseClient {
     
+    // MARK: public getter and setter methods
+    
     func getStudentLocations(_ completionHandlerGetLoc: @escaping (_ data: [StudentLocation]?, _ error: NSError?) -> Void) {
         
         // query to get latest, hundert entries
@@ -19,6 +21,7 @@ class ParseClient {
         requestStudentLocationFromParseAPI(query: query, completionHandler: completionHandlerGetLoc)
     }
     
+    
     func getStudentLocation(forUser userId: String, completionHandlerGetLoc: @escaping (_ data: [StudentLocation]?, _ error: NSError?) -> Void) {
         
         // query to get location of given user
@@ -26,30 +29,6 @@ class ParseClient {
         
         // request data from Parse API
         requestStudentLocationFromParseAPI(query: query, completionHandler: completionHandlerGetLoc)
-    }
-    
-    
-    private func requestStudentLocationFromParseAPI(query: String, completionHandler: @escaping (_ data: [StudentLocation]?, _ error: NSError?) -> Void) {
-        
-        // parse query sting in a valid url query on the parse API
-        let urlQuery = ("\(Constants.API_URL)?\(query)").addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
-        
-        let request = NSMutableURLRequest(url: URL(string: urlQuery)!)
-        request.addValue(Constants.API_ID, forHTTPHeaderField: Constants.API_ID_Field)
-        request.addValue(Constants.API_Key, forHTTPHeaderField: Constants.API_KEY_Field)
-        
-        performTaskOnParseAPI(request: request) { (data, error) in
-            guard let data = data else {
-                completionHandler(nil, error)
-                return
-            }
-            
-            if let dataStudentLoc = data["results"] as? [[String: AnyObject]] {
-                completionHandler(StudentLocation.studentLocations(fromResults: dataStudentLoc), nil)
-            } else {
-                completionHandler(nil, NSError(domain: "getStudentLocations", code: 0, userInfo: [NSLocalizedDescriptionKey: "no students locations found for query"]))
-            }
-        }
     }
     
     
@@ -78,8 +57,33 @@ class ParseClient {
                 completionHandlerSetLoc(false, error)
                 return
             }
-            
             completionHandlerSetLoc(true, nil)
+        }
+    }
+    
+    
+    // MARK: Parse API methods
+    
+    private func requestStudentLocationFromParseAPI(query: String, completionHandler: @escaping (_ data: [StudentLocation]?, _ error: NSError?) -> Void) {
+        
+        // parse query sting in a valid url query on the parse API
+        let urlQuery = ("\(Constants.API_URL)?\(query)").addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
+        
+        let request = NSMutableURLRequest(url: URL(string: urlQuery)!)
+        request.addValue(Constants.API_ID, forHTTPHeaderField: Constants.API_ID_Field)
+        request.addValue(Constants.API_Key, forHTTPHeaderField: Constants.API_KEY_Field)
+        
+        performTaskOnParseAPI(request: request) { (data, error) in
+            guard let data = data else {
+                completionHandler(nil, error)
+                return
+            }
+            
+            if let dataStudentLoc = data["results"] as? [[String: AnyObject]] {
+                completionHandler(StudentLocation.studentLocations(fromResults: dataStudentLoc), nil)
+            } else {
+                completionHandler(nil, NSError(domain: "getStudentLocations", code: 0, userInfo: [NSLocalizedDescriptionKey: "no students locations found for query"]))
+            }
         }
     }
     
@@ -121,6 +125,8 @@ class ParseClient {
     }
 }
 
+
+// MARK: ParseClient (Constants)
 
 extension ParseClient {
     

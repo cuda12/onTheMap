@@ -13,7 +13,7 @@ import Foundation
 
 class UdacityClient {
     
-    // MARK: members
+    // MARK: Members
     
     var userAccountDetails: AccountDetails?
     
@@ -47,6 +47,7 @@ class UdacityClient {
             }
         }
     }
+    
     
     // MARK: API Methods
     
@@ -147,13 +148,12 @@ class UdacityClient {
                 completionHandler(jsonData, nil)
                 
             } catch {
-                let userErrMsg = NSError(domain: "performTaskOnUdacityAPI", code: 0, userInfo: [NSLocalizedDescriptionKey: "cant parse respons to json"])
+                let userErrMsg = NSError(domain: "performTaskOnUdacityAPI", code: 0, userInfo: [NSLocalizedDescriptionKey: "cant parse response to json"])
                 completionHandler(nil, userErrMsg)
             }
         }
         task.resume()
     }
-    
     
     
     // MARK: Shared Instance
@@ -171,8 +171,6 @@ class UdacityClient {
 // MARK: UdacityClient (Constants)
 
 extension UdacityClient {
-
-    // MARK: Constants
     
     struct Constants {
         static let ApiUrl = "https://www.udacity.com/api"

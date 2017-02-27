@@ -21,8 +21,7 @@ class LoginViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
-        
+        // init overlay view
         overlayView = storyboard?.instantiateViewController(withIdentifier: "LoginAuthViewController").view
     }
 
