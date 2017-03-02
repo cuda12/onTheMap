@@ -30,7 +30,7 @@ class MapViewController: OTMViewControllerConvenience {
     }
     
     func addPinsToMapforStudents() {
-        for studentLocation in studentLocations {
+        for studentLocation in StudentLocations.sharedInstance.locations {
             let coordinates = CLLocationCoordinate2D(latitude: CLLocationDegrees(studentLocation.latitude), longitude: CLLocationDegrees(studentLocation.longitude))
             let fullname = "\(studentLocation.firstName) \(studentLocation.lastName)"
             let mediaURL = studentLocation.mediaUrl

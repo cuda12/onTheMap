@@ -17,13 +17,20 @@ class ParseClient {
     
     // MARK: public getter and setter methods
     
-    func getStudentLocations(_ completionHandlerGetLoc: @escaping (_ data: [StudentLocation]?, _ error: NSError?) -> Void) {
+    func getStudentLocations(_ completionHandlerGetLoc: @escaping (_ success: Bool, _ error: NSError?) -> Void) {
         
         // query to get latest, hundert entries
         let query = "limit=100&order=-updatedAt"
         
         // request data from Parse API
-        requestStudentLocationFromParseAPI(query: query, completionHandler: completionHandlerGetLoc)
+        requestStudentLocationFromParseAPI(query: query, completionHandler: { (data, error) in
+            if let error = error {
+                completionHandlerGetLoc(false, error)
+            } else {
+                StudentLocations.sharedInstance.locations = data!
+                completionHandlerGetLoc(true, nil)
+            }
+        })
     }
     
     

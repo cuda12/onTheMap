@@ -17,7 +17,6 @@ class OTMViewControllerConvenience: UIViewController {
     
     // MARK: members
     
-    var studentLocations = [StudentLocation]()
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     
@@ -46,15 +45,13 @@ class OTMViewControllerConvenience: UIViewController {
     
     func getStudentLocations(_ completionHandler: @escaping () -> Void) {
         enableView(enable: false)
-        ParseClient.sharedInstance.getStudentLocations { (data, error) in
-            guard let data = data else {
+        ParseClient.sharedInstance.getStudentLocations { (success, error) in
+            if !success {
                 self.showAlert(title: "No data loaded", details: "Couldnt load any students data, check network and refresh")
                 self.enableView(enable: true)
-                return
+            } else {
+                completionHandler()
             }
-            
-            self.studentLocations = data
-            completionHandler()
         }
     }
 

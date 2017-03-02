@@ -10,7 +10,6 @@ import UIKit
 
 class TableViewController: OTMViewControllerConvenience {
 
-    
     @IBOutlet weak var tableStudentLocations: UITableView!
     
     override func viewWillAppear(_ animated: Bool) {
@@ -36,12 +35,12 @@ class TableViewController: OTMViewControllerConvenience {
 extension TableViewController: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return studentLocations.count
+        return StudentLocations.sharedInstance.locations.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let studentLocation = studentLocations[indexPath.row]
+        let studentLocation = StudentLocations.sharedInstance.locations[indexPath.row]
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "StudentLocationCellId") as UITableViewCell!
         cell?.textLabel?.text = "\(studentLocation.firstName) \(studentLocation.lastName)"
@@ -53,7 +52,7 @@ extension TableViewController: UITableViewDelegate, UITableViewDataSource {
     
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let studentLocation = studentLocations[indexPath.row]
+        let studentLocation = StudentLocations.sharedInstance.locations[indexPath.row]
     
         let app = UIApplication.shared
         

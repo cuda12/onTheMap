@@ -6,6 +6,18 @@
 //  Copyright © 2017 Andreas Rueesch. All rights reserved.
 //
 
+// MARK: Student Locations class
+
+class StudentLocations {
+    
+    // shared Instance
+    static let sharedInstance = StudentLocations()
+    
+    // student locations
+    var locations = [StudentLocation]()
+}
+
+
 // MARK: Student Location struct
 
 struct StudentLocation {
@@ -88,3 +100,5 @@ struct StudentLocation {
         return studentLocations
     }
 }
+
+
