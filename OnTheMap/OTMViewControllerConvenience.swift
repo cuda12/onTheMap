@@ -67,7 +67,17 @@ class OTMViewControllerConvenience: UIViewController {
     
     
     func logout() {
-        dismiss(animated: true, completion: nil)
+        enableView(enable: false)
+        UdacityClient.sharedInstance().deleteSessionID { (success, errorMsg) in
+            performUIUpdatesOnMain {
+                self.enableView(enable: true)
+                if success {
+                    self.dismiss(animated: true, completion: nil)
+                } else {
+                    self.showAlert(title: "Logout Failed", details: errorMsg!)
+                }
+            }
+        }
     }
     
 

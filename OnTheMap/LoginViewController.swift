@@ -34,8 +34,6 @@ class LoginViewController: UIViewController {
         
         // subscribe to keyboard notification
         subscribeToKeyboardNotifications()
-        
-        print(inputEmail.frame.origin.y)
     }
 
     override func viewWillDisappear(_ animated: Bool) {

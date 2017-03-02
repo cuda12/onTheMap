@@ -24,22 +24,15 @@ class UdacityClient {
         // To authenticate Udacity API requests - get a session ID
         getSessionID(username, password) { (success, userId, errorMsg) in
             if success {
-                // successfuly logged in
-                self.getPublicUserData(userId!, completionHandler: {(successUserDetails, errorMsgUserDetails) in
-                    // and then delete the session ID in any case
-                    self.deleteSessionID({ (success, errorMsg) in
-                        if success && successUserDetails {
-                            // successfully deleted Session ID
-                            completionHandlerAuth(true, nil)
-                        } else {
-                            // successfully logged in but session ID not properly delete, or no user details retrieved, since session ID will expire within 24 hours, user is granted with access
-                            if let errorMsgUserDetails = errorMsgUserDetails {
-                                completionHandlerAuth(true, errorMsgUserDetails)
-                            } else {
-                                completionHandlerAuth(true, errorMsg!)
-                            }
-                        }
-                    })
+                // successfully logged in
+                self.getPublicUserData(userId!, completionHandler: {(success, errorMsg) in
+                    if success {
+                        // successfully gather the user's data
+                        completionHandlerAuth(true, nil)
+                    } else {
+                        // couldnt gather user's data
+                        completionHandlerAuth(false, errorMsg!)
+                    }
                 })
             } else {
                 // login failed
@@ -47,7 +40,6 @@ class UdacityClient {
             }
         }
     }
-    
     
     // MARK: API Methods
     
@@ -77,7 +69,7 @@ class UdacityClient {
     }
     
     
-    private func deleteSessionID(_ completionHandlerDeleteSessionID: @escaping (_ success: Bool, _ errorMsg: String?) -> Void) {
+    func deleteSessionID(_ completionHandlerDeleteSessionID: @escaping (_ success: Bool, _ errorMsg: String?) -> Void) {
         
         let request = NSMutableURLRequest(url: URL(string: Constants.ApiSessionUrl)!)
         request.httpMethod = "DELETE"
