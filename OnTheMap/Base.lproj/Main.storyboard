@@ -117,6 +117,7 @@
                         <outlet property="inputEmail" destination="lJs-9L-f8j" id="ngK-pk-ywL"/>
                         <outlet property="inputPassword" destination="5qY-l5-l8H" id="aDt-XW-xoJ"/>
                         <outlet property="labelOutput" destination="2Qr-MV-T2B" id="SaI-Le-IVy"/>
+                        <outlet property="stackViewLogin" destination="SSX-3g-6rl" id="ubW-yT-DMr"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

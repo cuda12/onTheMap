@@ -14,9 +14,11 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var inputPassword: UITextField!
     @IBOutlet weak var buttonLoginUdacity: UIButton!
     @IBOutlet weak var labelOutput: UILabel!
+    @IBOutlet weak var stackViewLogin: UIStackView!
+
     
     var overlayView: UIView?
-    
+    var activeTextField: UITextField?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,9 +31,20 @@ class LoginViewController: UIViewController {
         super.viewWillAppear(animated)
         
         enableUI(enable: true)
+        
+        // subscribe to keyboard notification
+        subscribeToKeyboardNotifications()
+        
+        print(inputEmail.frame.origin.y)
     }
 
-
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        // unsubscribe to keyboard notification
+        unsubscribeFromKeyboardNotifications()
+    }
+    
     // MARK: - Button actions
 
     @IBAction func loginButtonPressed(_ sender: Any) {
@@ -134,14 +147,51 @@ private extension LoginViewController {
 // MARK: TextFieldDelegate methods
 
 extension LoginViewController: UITextFieldDelegate {
+    
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        activeTextField = textField
+    }
+    
     func textFieldDidEndEditing(_ textField: UITextField) {
         checkValidLoginInputTypes()
+        activeTextField = nil
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
     }
+    
+    
+    // MARK: Hide / Shwo keyboard and notifications
+    
+    func subscribeToKeyboardNotifications() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: .UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: .UIKeyboardWillHide, object: nil)
+    }
+    
+    func unsubscribeFromKeyboardNotifications() {
+        NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillHide, object: nil)
+    }
+    
+    
+    func keyboardWillShow(_ notification: Notification) {
+        // shift up if the text field is covered
+        let userInfo = notification.userInfo
+        let keyboardSize = userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue
+    
+        let overlap = stackViewLogin.frame.size.height - keyboardSize.cgRectValue.height - (activeTextField?.frame.origin.y)! - (activeTextField?.bounds.height)!
+        if overlap < 0 {
+            view.frame.origin.y = overlap
+        }
+    }
+    
+    func keyboardWillHide() {
+        view.frame.origin.y = 0
+    }
+    
 }
 
 

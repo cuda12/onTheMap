@@ -13,6 +13,7 @@ class InformationPostingViewController: UIViewController {
 
     var prevObjectId: String?
     var postedLocationCoordiantes: CLLocationCoordinate2D?
+    var activeTextField: UITextField?
     
     @IBOutlet weak var viewTop: UIView!
     @IBOutlet weak var viewMid: UIView!
@@ -48,8 +49,18 @@ class InformationPostingViewController: UIViewController {
     
         // check if user already has set a location
         loadUserLocation()
+        
+        // registrate to keyboard notification
+        subscribeToKeyboardNotifications()
     }
     
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        // unsubsribe form keyboard notification
+        unsubscribeFromKeyboardNotifications()
+    }
     
     // MARK: Buttons actions
     
@@ -162,6 +173,10 @@ class InformationPostingViewController: UIViewController {
 
 extension InformationPostingViewController: UITextFieldDelegate {
     
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        activeTextField = textField
+    }
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
@@ -177,6 +192,36 @@ extension InformationPostingViewController: UITextFieldDelegate {
                 }
             }
         }
+        
+        activeTextField = nil
+    }
+    
+    // MARK: Hide / Shwo keyboard and notifications
+    
+    func subscribeToKeyboardNotifications() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: .UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: .UIKeyboardWillHide, object: nil)
+    }
+    
+    func unsubscribeFromKeyboardNotifications() {
+        NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillHide, object: nil)
+    }
+    
+    
+    func keyboardWillShow(_ notification: Notification) {
+        // shift up if the text field is covered
+        let userInfo = notification.userInfo
+        let keyboardSize = userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue
+        
+        let overlap = view.frame.size.height - keyboardSize.cgRectValue.height - (activeTextField?.frame.origin.y)! - (activeTextField?.bounds.height)!
+        if overlap < 0 {
+            view.frame.origin.y = overlap
+        }
+    }
+    
+    func keyboardWillHide() {
+        view.frame.origin.y = 0
     }
 }
 
