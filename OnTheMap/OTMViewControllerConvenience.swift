@@ -49,6 +49,7 @@ class OTMViewControllerConvenience: UIViewController {
         ParseClient.sharedInstance.getStudentLocations { (data, error) in
             guard let data = data else {
                 self.showAlert(title: "No data loaded", details: "Couldnt load any students data, check network and refresh")
+                self.enableView(enable: true)
                 return
             }
             
