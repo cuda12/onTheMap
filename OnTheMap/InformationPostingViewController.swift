@@ -97,10 +97,10 @@ class InformationPostingViewController: UIViewController {
             if let urlPostedByUser = URL(string: textFieldUrl.text!), app.canOpenURL(urlPostedByUser) {
                 
                 // build student location info
-                let userStudentLocation = StudentLocation(UserDetails: UdacityClient.sharedInstance().userAccountDetails!, MapString: textFieldLocation.text! , MediaUrl: textFieldUrl.text!, Latitude: Double((postedLocationCoordiantes?.latitude)!), Longitude: Double((postedLocationCoordiantes?.longitude)!), ObjectId: prevObjectId)
+                let userStudentLocation = StudentLocation(UserDetails: UdacityClient.sharedInstance.userAccountDetails!, MapString: textFieldLocation.text! , MediaUrl: textFieldUrl.text!, Latitude: Double((postedLocationCoordiantes?.latitude)!), Longitude: Double((postedLocationCoordiantes?.longitude)!), ObjectId: prevObjectId)
                 
                 // post it
-                ParseClient.sharedInstance().setStudentLocation(forStudentLocation: userStudentLocation, completionHandlerSetLoc: { (success, error) in
+                ParseClient.sharedInstance.setStudentLocation(forStudentLocation: userStudentLocation, completionHandlerSetLoc: { (success, error) in
                     if success {
                         performUIUpdatesOnMain {
                             self.dismiss(animated: true, completion: nil)
@@ -128,8 +128,8 @@ class InformationPostingViewController: UIViewController {
     func loadUserLocation() {
         // check if user already set a location, if so set instance member to latest
         
-        if let userId = UdacityClient.sharedInstance().userAccountDetails?.UserID {
-            ParseClient.sharedInstance().getStudentLocation(forUser: userId, completionHandlerGetLoc: { (data, error) in
+        if let userId = UdacityClient.sharedInstance.userAccountDetails?.UserID {
+            ParseClient.sharedInstance.getStudentLocation(forUser: userId, completionHandlerGetLoc: { (data, error) in
                 if error == nil {
                     // store latest entry
                     if let usersLocation = data?[0] {

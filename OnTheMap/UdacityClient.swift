@@ -17,6 +17,10 @@ class UdacityClient {
     
     var userAccountDetails: AccountDetails?
     
+    // MARK: Shared Instance
+    static let sharedInstance = UdacityClient()
+    
+    
     // MARK: Authentication method
     
     func authenticateUdacityUser(_ username: String, _ password: String, completionHandlerAuth: @escaping (_ success: Bool, _ errorMsg: String?) -> Void) {
@@ -145,16 +149,6 @@ class UdacityClient {
             }
         }
         task.resume()
-    }
-    
-    
-    // MARK: Shared Instance
-    
-    class func sharedInstance() -> UdacityClient {
-        struct Singleton {
-            static var sharedInstance = UdacityClient()
-        }
-        return Singleton.sharedInstance
     }
 }
 

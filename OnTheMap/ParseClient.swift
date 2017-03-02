@@ -10,6 +10,11 @@ import Foundation
 
 class ParseClient {
     
+    // MARK: Shared Instance
+    
+    static let sharedInstance = ParseClient()
+   
+    
     // MARK: public getter and setter methods
     
     func getStudentLocations(_ completionHandlerGetLoc: @escaping (_ data: [StudentLocation]?, _ error: NSError?) -> Void) {
@@ -111,17 +116,6 @@ class ParseClient {
             }
         }
         task.resume()
-    }
-    
-    
-    
-    // MARK: Shared Instance
-    
-    class func sharedInstance() -> ParseClient {
-        struct Singleton {
-            static var sharedInstance = ParseClient()
-        }
-        return Singleton.sharedInstance
     }
 }
 

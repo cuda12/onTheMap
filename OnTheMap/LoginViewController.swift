@@ -55,7 +55,7 @@ class LoginViewController: UIViewController {
         let password = inputPassword.text!
         
         // authenticate udacity user
-        UdacityClient.sharedInstance().authenticateUdacityUser(username, password, completionHandlerAuth: { (success, errorMsg) in
+        UdacityClient.sharedInstance.authenticateUdacityUser(username, password, completionHandlerAuth: { (success, errorMsg) in
             
             if success {
                 performUIUpdatesOnMain {

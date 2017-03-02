@@ -46,7 +46,7 @@ class OTMViewControllerConvenience: UIViewController {
     
     func getStudentLocations(_ completionHandler: @escaping () -> Void) {
         enableView(enable: false)
-        ParseClient.sharedInstance().getStudentLocations { (data, error) in
+        ParseClient.sharedInstance.getStudentLocations { (data, error) in
             guard let data = data else {
                 self.showAlert(title: "No data loaded", details: "Couldnt load any students data, check network and refresh")
                 return
@@ -68,7 +68,7 @@ class OTMViewControllerConvenience: UIViewController {
     
     func logout() {
         enableView(enable: false)
-        UdacityClient.sharedInstance().deleteSessionID { (success, errorMsg) in
+        UdacityClient.sharedInstance.deleteSessionID { (success, errorMsg) in
             performUIUpdatesOnMain {
                 self.enableView(enable: true)
                 if success {
